@@ -1,54 +1,52 @@
 # IntraLink
 
-> **Описание проекта**
-> Intralink - корпоративная социальную сеть, с возможностью
-ведения списка сотрудников организации, создания личных страниц, страниц отделов
-и департаментов, страниц проектных команд, публикации информации на созданных
-страницах, создания мероприятий (событий в календаре) и приглашения на эти
-мероприятия сотрудников (для организации совещаний)
+> **Project Description**
+> Intralink is a corporate social network that lets you manage an organization
+> employee directory, create personal pages, department and division pages,
+> project team pages, publish information on those pages, create events (calendar
+> entries), and invite employees to those events (for organizing meetings).
 
-
-## 🛠 Технологический стек
+## 🛠 Technology Stack
 
 *   **Backend**: .NET 8 (ASP.NET Core Web API)
 *   **Database**: PostgreSQL
 *   **ORM**: Entity Framework Core
 *   **Frontend**: Vue.js
 
-## 📂 Структура проекта
+## 📂 Project Structure
 
-*   `backend/Api` — Основной проект WEB API.
-*   `backend/Data` — Библиотека классов с контекстом БД и миграциями.
-*   `docs/` — Документация и ТЗ проекта.
+*   `backend/Api` — Main Web API project.
+*   `backend/Data` — Class library with the DB context and migrations.
+*   `docs/` — Project documentation and technical specification.
 
-## 🚀 Установка и запуск (для разработчиков)
+## 🚀 Setup and Run (Developers)
 
-### Предварительные требования
-1.  Установите **.NET 8 SDK**.
-2.  Установите **PostgreSQL**.
-3.  Настройте доступ к команде `dotnet ef` (если нет):
+### Prerequisites
+1.  Install the **.NET 8 SDK**.
+2.  Install **PostgreSQL**.
+3.  Enable access to the `dotnet ef` tool (if missing):
     ```powershell
     dotnet tool install --global dotnet-ef
     ```
 
-### 1. Настройка базы данных
-Мы не храним пароли в коде. Используйте **User Secrets** для настройки подключения.
+### 1. Configure the Database
+We do not store passwords in code. Use **User Secrets** to set the connection string.
 
-Откройте терминал в папке `backend/Api` и выполните:
+Open a terminal in `backend/Api` and run:
 ```powershell
 dotnet user-secrets init
-dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Host=localhost;Database=IntraLinkDb;Username=postgres;Password=ВАШ_ПАРОЛЬ"
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Host=localhost;Database=IntraLinkDb;Username=postgres;Password=YOUR_PASSWORD"
 ```
-*(Замените `ВАШ_ПАРОЛЬ` на пароль от пользователя postgres на вашем компьютере).*
+*(Replace `YOUR_PASSWORD` with your local postgres user password.)*\
 
-### 2. Применение миграций
-Чтобы создать базу данных и таблицы, выполните команду из корня проекта:
+### 2. Apply Migrations
+To create the database and tables, run this from the project root:
 ```powershell
 dotnet ef database update --project backend/Data/Data.csproj --startup-project backend/Api/Api.csproj
 ```
 
-### 3. Запуск Backend
+### 3. Run Backend
 ```powershell
 dotnet run --project backend/Api/Api.csproj
 ```
-API будет доступно по адресу: `http://localhost:5038/swagger` (порт может отличаться, смотрите вывод в терминале).
+The API will be available at `http://localhost:5038/swagger` (the port may differ; check the terminal output).
