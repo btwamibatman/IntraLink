@@ -70,4 +70,4 @@ BenchmarkDotNet.Artifacts/
 *.swp
 *.swo
 
-Постановка задач проекта
+docs/Постановка задач проекта.pdf
