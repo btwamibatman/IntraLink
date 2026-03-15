@@ -30,7 +30,7 @@
     ```
 
 ### 1. Configure the Database
-We do not store passwords in code. Use **User Secrets** to set the connection string.
+Do not store passwords in code. Use **User Secrets** to set the connection string.
 
 Open a terminal in `backend/Api` and run:
 ```powershell
@@ -39,11 +39,24 @@ dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Host=localhost;Da
 ```
 *(Replace `YOUR_PASSWORD` with your local postgres user password.)*\
 
-### 2. Apply Migrations
-To create the database and tables, run this from the project root:
+### 2. Create Migrations
+To create the database and tables, run this from the project root(cd backend/Api):
 ```powershell
 dotnet ef database update --project backend/Data/Data.csproj --startup-project backend/Api/Api.csproj
 ```
+
+### 2.2 Work with Migration
+1. Create new migration
+from folder cd backend/Api:
+dotnet ef migrations add <MigrationName> --project ..\Data --startup-project .
+for example:
+dotnet ef migrations add AddEmailToUser --project ..\Data --startup-project .
+
+2. Apply migration to db
+dotnet ef database update --project ..\Data --startup-project .
+
+3. roll back for previous version of migration
+dotnet ef database update <PreviousMigrationName> --project ..\Data --startup-project .
 
 ### 3. Run Backend
 ```powershell
