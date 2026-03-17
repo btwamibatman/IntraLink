@@ -1,35 +1,60 @@
 @import './base.css';
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+:root {
+  --ink-900: #1c1f2b;
+  --ink-700: #3a3f55;
+  --ink-500: #6c7187;
+  --surface-100: #ffffff;
+  --surface-200: #f6f7fb;
+  --surface-300: #eef1f7;
+  --line-100: rgba(28, 31, 43, 0.08);
+  --accent-500: #2f80ed;
+  --accent-600: #1e6ad0;
+  --accent-700: #1753a3;
+  --mint-500: #2ec4b6;
+  --peach-500: #ffb454;
+  --shadow-1: 0 10px 30px rgba(18, 23, 39, 0.08);
+  --shadow-2: 0 14px 40px rgba(18, 23, 39, 0.12);
+  --radius-1: 14px;
+  --radius-2: 20px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#app {
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  color: var(--ink-900);
+  background:
+    radial-gradient(circle at 10% 10%, #f7f4ff 0%, transparent 45%),
+    radial-gradient(circle at 90% 20%, #e8f4ff 0%, transparent 50%),
+    linear-gradient(135deg, #f6f7fb 0%, #fbf7f1 100%);
+  line-height: 1.6;
+}
 
 #app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-weight: normal;
+  font-weight: 400;
 }
 
-a,
-.green {
+a {
+  color: inherit;
   text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-  padding: 3px;
 }
 
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-  }
-}
-
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
-
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
-  }
+img {
+  max-width: 100%;
+  display: block;
 }

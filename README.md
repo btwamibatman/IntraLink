@@ -17,6 +17,7 @@
 
 *   `backend/Api` — Main Web API project.
 *   `backend/Data` — Class library with the DB context and migrations.
+    'frontend/src' - frontend part of project
 *   `docs/` — Project documentation and technical specification.
 
 ## 🚀 Setup and Run (Developers)
@@ -63,3 +64,9 @@ dotnet ef database update <PreviousMigrationName> --project ..\Data --startup-pr
 dotnet run --project backend/Api/Api.csproj
 ```
 The API will be available at `http://localhost:5038/swagger` (the port may differ; check the terminal output).
+
+### 3. Run Frontend
+cd "c:\Users\Hamza\OneDrive\Desktop\Notes of Hamza\Programming\Projects\IntraLink\frontend\intralink-frontend"
+
+npm run dev
+
