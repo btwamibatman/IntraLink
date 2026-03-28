@@ -10,6 +10,20 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<User>().ToTable("users");
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.ToTable("users");
+
+            entity.Property(user => user.Name)
+                .HasMaxLength(100)
+                .IsRequired();
+
+            entity.Property(user => user.Email)
+                .HasMaxLength(255)
+                .IsRequired();
+
+            entity.HasIndex(user => user.Email)
+                .IsUnique();
+        });
     }
 }

@@ -1,8 +1,15 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Api.Models;
 
 public class CreateUserRequest
 {
-    public string Name { get; set; } = "";
-    public string Email { get; set; } = "";
-        
+    [Required]
+    [MaxLength(100)]
+    public string? Name { get; set; }
+
+    [Required]
+    [MaxLength(255)]
+    [EmailAddress]
+    public string? Email { get; set; }
 }
