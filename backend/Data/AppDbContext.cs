@@ -1,23 +1,29 @@
 using Microsoft.EntityFrameworkCore;
+using Data.Entities;
 
-namespace Api.Data;
+namespace Data;
 
 public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-
-    // Example table:
     public DbSet<User> Users => Set<User>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<User>().ToTable("users");
-    }
-}
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.ToTable("users");
 
-public class User
-{
-    public int Id { get; set; }
-    public string Name { get; set; } = "";
-    public bool IsActive { get; set; }
+            entity.Property(user => user.Name)
+                .HasMaxLength(100)
+                .IsRequired();
+
+            entity.Property(user => user.Email)
+                .HasMaxLength(255)
+                .IsRequired();
+
+            entity.HasIndex(user => user.Email)
+                .IsUnique();
+        });
+    }
 }
