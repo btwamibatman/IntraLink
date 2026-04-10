@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-
+//DTO for creating a new user, with validation attributes to ensure data integrity.
 namespace Api.Models;
 
 public class CreateUserRequest
