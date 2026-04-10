@@ -120,8 +120,11 @@ const initials = (name: string) =>
           <div class="user-chip">
             <span class="avatar avatar--sm">HA</span>
             <div>
-              <div class="user-name">Hamza A.</div>
-              <div class="user-role">Admin</div>
+              <div class="user-name">Gagarin</div>
+              <div class="user-role">User</div>
+              <button class="ghost-button" style="margin-top: 4px; padding: 4px 8px; font-size: 0.75rem">
+                View profile
+              </button>
             </div>
           </div>
         </div>
@@ -171,7 +174,7 @@ const initials = (name: string) =>
                 <span class="avatar avatar--sm">{{ initials(post.author) }}</span>
                 <div>
                   <div class="post-name">{{ post.author }}</div>
-                  <div class="post-role">{{ post.role }} · {{ post.time }}</div>
+                  <div class="post-role">{{ post.role }} ï¿½ {{ post.time }}</div>
                 </div>
               </div>
               <button class="ghost-button">More</button>
