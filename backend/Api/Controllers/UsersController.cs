@@ -1,4 +1,4 @@
-using Api.Models;
+using Api.DTOs;
 using Data;
 using Data.Entities;
 using Microsoft.AspNetCore.Mvc;
