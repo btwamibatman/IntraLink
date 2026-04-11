@@ -1,9 +1,6 @@
 using Api.DTOs;
-using Data;
-using Data.Entities;
+using Api.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Npgsql;
 
 namespace Api.Controllers;
 
@@ -11,124 +8,65 @@ namespace Api.Controllers;
 [Route("users")]
 public class UsersController : ControllerBase
 {
-    private readonly AppDbContext _db;
-    private readonly ILogger<UsersController> _logger;
+    private readonly IUserService _userService;
 
-    public UsersController(AppDbContext db, ILogger<UsersController> logger)
+    public UsersController(IUserService userService)
     {
-        _db = db;
-        _logger = logger;
+        _userService = userService;
     }
 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateUserRequest request)
     {
-        var user = new User
-        {
-            Name = request.Name!.Trim(),
-            Email = request.Email!.Trim().ToLowerInvariant()
-        };
+        var (user, error) = await _userService.CreateAsync(request);
 
-        _db.Users.Add(user);
-
-        try
-        {
-            await _db.SaveChangesAsync();
-            _logger.LogInformation("User {UserId} created with email {Email}", user.Id, user.Email);
-            return CreatedAtAction(nameof(GetById), new { id = user.Id }, user);
-        }
-        catch (DbUpdateException ex) when (IsUniqueEmailViolation(ex))
-        {
-            _logger.LogWarning("Email conflict during create for {Email}", user.Email);
+        if (error is not null)
             return Conflict(new ProblemDetails
             {
                 Title = "Email already exists",
                 Detail = "A user with this email already exists.",
                 Status = StatusCodes.Status409Conflict
             });
-        }
+
+        return CreatedAtAction(nameof(GetById), new { id = user!.Id }, user);
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var users = await _db.Users
-            .AsNoTracking()
-            .ToListAsync();
-
+        var users = await _userService.GetAllAsync();
         return Ok(users);
     }
 
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var user = await _db.Users
-            .AsNoTracking()
-            .FirstOrDefaultAsync(user => user.Id == id);
+        var user = await _userService.GetByIdAsync(id);
 
-        if (user is null)
-        {
-            _logger.LogWarning("User {UserId} not found", id);
-            return NotFound();
-        }
-
-        return Ok(user);
+        return user is null ? NotFound() : Ok(user);
     }
 
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] UpdateUserRequest request)
     {
-        var user = await _db.Users.FindAsync(id);
+        var (user, error) = await _userService.UpdateAsync(id, request);
 
-        if (user is null)
-        {
-            _logger.LogWarning("Cannot update user {UserId}: not found", id);
-            return NotFound();
-        }
-
-        user.Name = request.Name!.Trim();
-        user.Email = request.Email!.Trim().ToLowerInvariant();
-
-        try
-        {
-            await _db.SaveChangesAsync();
-            _logger.LogInformation("User {UserId} updated", id);
-            return Ok(user);
-        }
-        catch (DbUpdateException ex) when (IsUniqueEmailViolation(ex))
-        {
-            _logger.LogWarning("Email conflict during update for user {UserId} and email {Email}", id, user.Email);
+        if (error == "not_found") return NotFound();
+        if (error is not null)
             return Conflict(new ProblemDetails
             {
                 Title = "Email already exists",
                 Detail = "A user with this email already exists.",
                 Status = StatusCodes.Status409Conflict
             });
-        }
+
+        return Ok(user);
     }
 
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var user = await _db.Users.FindAsync(id);
-
-        if (user is null)
-        {
-            _logger.LogWarning("Cannot delete user {UserId}: not found", id);
-            return NotFound();
-        }
-
-        _db.Users.Remove(user);
-        await _db.SaveChangesAsync();
-        _logger.LogInformation("User {UserId} deleted", id);
-
-        return NoContent();
-    }
-
-    private static bool IsUniqueEmailViolation(DbUpdateException exception)
-    {
-        return exception.InnerException is PostgresException postgresException
-               && postgresException.SqlState == PostgresErrorCodes.UniqueViolation
-               && postgresException.ConstraintName == "IX_users_Email";
+        var deleted = await _userService.DeleteAsync(id);
+        return deleted ? NoContent() : NotFound();
     }
 }
