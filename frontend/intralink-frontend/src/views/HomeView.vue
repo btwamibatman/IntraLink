@@ -1,13 +1,30 @@
-<script setup lang="ts">
-const navItems = [
-  { label: 'Feed', active: true },
-  { label: 'Chat' },
-  { label: 'Profile' },
-  { label: 'Teams' },
-  { label: 'Events' },
-  { label: 'Files' },
-  { label: 'Settings' },
+﻿<script setup lang="ts">
+import { useAuthStore } from '@/stores/authStore'
+
+const authStore = useAuthStore()
+
+type NavIcon = 'feed' | 'chat' | 'profile' | 'teams' | 'events' | 'files' | 'settings'
+
+const navItems: Array<{ label: string; icon: NavIcon; active?: boolean }> = [
+  { label: 'Feed', icon: 'feed', active: true },
+  { label: 'Chat', icon: 'chat' },
+  { label: 'Profile', icon: 'profile' },
+  { label: 'Teams', icon: 'teams' },
+  { label: 'Events', icon: 'events' },
+  { label: 'Files', icon: 'files' },
+  { label: 'Settings', icon: 'settings' },
 ]
+
+const navIconPath: Record<NavIcon, string> = {
+  feed: 'M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1v-9.5z',
+  chat: 'M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H9l-5 4v-4H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z',
+  profile: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm-7 8a7 7 0 0 1 14 0',
+  teams: 'M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm8 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM2.5 20a5.5 5.5 0 0 1 11 0m3 0a5.5 5.5 0 0 1 5.5-5.5',
+  events: 'M8 3v3m8-3v3M3 10h18M6 5h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z',
+  files: 'M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7l-5-5zm0 0v5h5',
+  settings:
+    'M12 9.2a2.8 2.8 0 1 0 0 5.6 2.8 2.8 0 0 0 0-5.6zm7.2 2.8-.9.5.1 1.1.9.6-1.4 2.4-1-.4-.9.6-.1 1.1h-2.8l-.1-1.1-1-.6-1 .4-1.4-2.4.9-.6.1-1.1-.9-.5 1.4-2.4 1 .4 1-.6.1-1.1h2.8l.1 1.1.9.6 1-.4 1.4 2.4z',
+}
 
 const friends = [
   { name: 'Emily Carter', role: 'Product Designer', status: 'online', color: '#7b8cff' },
@@ -93,7 +110,9 @@ const initials = (name: string) =>
           class="nav-item"
           :class="{ 'is-active': item.active }"
         >
-          <span class="nav-dot" />
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path :d="navIconPath[item.icon]" />
+          </svg>
           {{ item.label }}
         </button>
       </nav>
@@ -118,13 +137,13 @@ const initials = (name: string) =>
           <button class="icon-btn">New</button>
           <button class="icon-btn">Alerts</button>
           <div class="user-chip">
-            <span class="avatar avatar--sm">HA</span>
+            <span class="avatar avatar--sm">{{ authStore.avatarInitials }}</span>
             <div>
-              <div class="user-name">Gagarin</div>
-              <div class="user-role">User</div>
-              <button class="ghost-button" style="margin-top: 4px; padding: 4px 8px; font-size: 0.75rem">
+              <div class="user-name">{{ authStore.userName }}</div>
+              <div class="user-role">{{ authStore.userRole || 'User' }}</div>
+              <RouterLink to="/profile" class="ghost-button" style="margin-top: 4px; padding: 4px 8px; font-size: 0.75rem">
                 View profile
-              </button>
+              </RouterLink>
             </div>
           </div>
         </div>
@@ -153,7 +172,7 @@ const initials = (name: string) =>
         <section class="feed">
           <div class="composer card" style="--delay: 120ms">
             <div class="composer-top">
-              <span class="avatar avatar--sm">HA</span>
+              <span class="avatar avatar--sm">{{ authStore.avatarInitials }}</span>
               <input class="composer-input" placeholder="Share an update with your team" />
             </div>
             <div class="composer-actions">
@@ -174,7 +193,7 @@ const initials = (name: string) =>
                 <span class="avatar avatar--sm">{{ initials(post.author) }}</span>
                 <div>
                   <div class="post-name">{{ post.author }}</div>
-                  <div class="post-role">{{ post.role }} � {{ post.time }}</div>
+                  <div class="post-role">{{ post.role }} пїЅ {{ post.time }}</div>
                 </div>
               </div>
               <button class="ghost-button">More</button>
@@ -316,11 +335,14 @@ const initials = (name: string) =>
   color: var(--ink-900);
 }
 
-.nav-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  background: var(--accent-500);
+.nav-icon {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex: 0 0 16px;
 }
 
 .sidebar-cta {
@@ -751,3 +773,4 @@ const initials = (name: string) =>
   }
 }
 </style>
+

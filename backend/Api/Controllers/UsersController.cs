@@ -14,8 +14,8 @@ public class UsersController : ControllerBase
     {
         _userService = userService;
     }
-
-    [HttpPost]
+  
+    [HttpPost("register")]
     public async Task<IActionResult> Create([FromBody] CreateUserRequest request)
     {
         var (user, error) = await _userService.CreateAsync(request);
@@ -29,6 +29,23 @@ public class UsersController : ControllerBase
             });
 
         return CreatedAtAction(nameof(GetById), new { id = user!.Id }, user);
+    }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginRequest request)
+    {
+        var (user, error) = await _userService.AuthenticateAsync(request);
+        if (error is not null)
+        {
+            return Unauthorized(new ProblemDetails
+            {
+                Title = "Invalid credentials",
+                Detail = "Email or password is incorrect.",
+                Status = StatusCodes.Status401Unauthorized
+            });
+        }
+
+        return Ok(user);
     }
 
     [HttpGet]

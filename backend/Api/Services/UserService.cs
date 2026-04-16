@@ -47,6 +47,28 @@ public class UserService : IUserService
         }
     }
 
+    public async Task<(UserResponse? user, string? error)> AuthenticateAsync(LoginRequest request)
+    {
+        var normalizedEmail = request.Email!.Trim().ToLowerInvariant();
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == normalizedEmail);
+
+        if (user is null)
+        {
+            _logger.LogWarning("Login failed for non-existing email {Email}", normalizedEmail);
+            return (null, "invalid_credentials");
+        }
+
+        var verifyResult = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, request.Password!);
+        if (verifyResult == PasswordVerificationResult.Failed)
+        {
+            _logger.LogWarning("Login failed due to wrong password for user {UserId}", user.Id);
+            return (null, "invalid_credentials");
+        }
+
+        _logger.LogInformation("User {UserId} logged in", user.Id);
+        return (MapToResponse(user), null);
+    }
+
     public async Task<List<UserResponse>> GetAllAsync()
     {
         return await _db.Users

@@ -33,10 +33,11 @@ export const useAuthStore = defineStore('auth', () => {
   // Действия
   function setUser(user: User, userToken?: string) {
     currentUser.value = user
+    localStorage.setItem('user', JSON.stringify(user))
+
     if (userToken) {
       token.value = userToken
       localStorage.setItem('token', userToken)
-      localStorage.setItem('user', JSON.stringify(user))
     }
   }
 
@@ -51,8 +52,12 @@ export const useAuthStore = defineStore('auth', () => {
   function restoreSession() {
     const savedUser = localStorage.getItem('user')
     const savedToken = localStorage.getItem('token')
-    if (savedUser && savedToken) {
+
+    if (savedUser) {
       currentUser.value = JSON.parse(savedUser)
+    }
+
+    if (savedToken) {
       token.value = savedToken
     }
   }
