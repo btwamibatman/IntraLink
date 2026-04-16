@@ -63,6 +63,8 @@ dotnet ef database update <PreviousMigrationName> --project ..\Data --startup-pr
 ```powershell
 dotnet run --project backend/Api/Api.csproj
 ```
+## dotnet watch run --project backend/Api/Api.csproj - Run of the API with the AUTORELOAD.
+
 The API will be available at `http://localhost:5038/swagger` (the port may differ; check the terminal output).
 
 ### 3. Run Frontend

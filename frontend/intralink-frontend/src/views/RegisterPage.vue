@@ -1,6 +1,7 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { computed, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/authStore'
 
 type RegisterPayload = {
   name: string
@@ -9,6 +10,7 @@ type RegisterPayload = {
 }
 
 const router = useRouter()
+const authStore = useAuthStore()
 
 const form = reactive<RegisterPayload>({
   name: '',
@@ -29,7 +31,7 @@ const register = async () => {
   success.value = ''
 
   if (!canSubmit.value) {
-    error.value = 'Заполните форму корректно: имя, email и пароль от 6 символов.'
+    error.value = 'Fill name, email, and password (min 6 chars).'
     return
   }
 
@@ -37,7 +39,7 @@ const register = async () => {
 
   try {
     const apiBase = (import.meta.env.VITE_API_BASE_URL ?? '').toString()
-    const response = await fetch(`${apiBase}/api/auth/register`, {
+    const response = await fetch(`${apiBase}/users/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form),
@@ -45,15 +47,36 @@ const register = async () => {
 
     if (!response.ok) {
       const data = await response.json().catch(() => null)
-      throw new Error(data?.message || 'Не удалось зарегистрироваться.')
+      throw new Error(data?.detail || data?.message || 'Registration failed.')
     }
 
-    success.value = 'Регистрация прошла успешно. Переходим на страницу входа...'
-    setTimeout(() => {
-      void router.push('/login')
-    }, 900)
+    const data = await response.json().catch(() => null)
+    const apiUser = data?.user ?? data
+    const token = data?.token as string | undefined
+
+    if (apiUser?.name && apiUser?.email) {
+      authStore.setUser(
+        {
+          id: apiUser.id ?? null,
+          name: apiUser.name,
+          email: apiUser.email,
+          role: apiUser.role ?? 'User',
+        },
+        token,
+      )
+    } else {
+      authStore.setUser({
+        id: null,
+        name: form.name,
+        email: form.email,
+        role: 'User',
+      })
+    }
+
+    success.value = 'Registration successful. Redirecting...'
+    await router.push('/')
   } catch (e) {
-    error.value = e instanceof Error ? e.message : 'Ошибка запроса.'
+    error.value = e instanceof Error ? e.message : 'Request failed.'
   } finally {
     loading.value = false
   }
@@ -63,13 +86,13 @@ const register = async () => {
 <template>
   <section class="register-page">
     <div class="card">
-      <h1>Регистрация</h1>
-      <p class="subtitle">Создайте аккаунт в IntraLink</p>
+      <h1>Register</h1>
+      <p class="subtitle">Create your IntraLink account</p>
 
       <form @submit.prevent="register" class="form">
         <label>
-          Имя
-          <input v-model="form.name" type="text" placeholder="Ваше имя" autocomplete="name" />
+          Name
+          <input v-model="form.name" type="text" placeholder="Your name" autocomplete="name" />
         </label>
 
         <label>
@@ -78,12 +101,12 @@ const register = async () => {
         </label>
 
         <label>
-          Пароль
-          <input v-model="form.password" type="password" placeholder="Минимум 6 символов" autocomplete="new-password" />
+          Password
+          <input v-model="form.password" type="password" placeholder="At least 6 characters" autocomplete="new-password" />
         </label>
 
         <button :disabled="loading || !canSubmit" type="submit">
-          {{ loading ? 'Регистрируем...' : 'Зарегистрироваться' }}
+          {{ loading ? 'Registering...' : 'Sign up' }}
         </button>
       </form>
 
@@ -91,8 +114,8 @@ const register = async () => {
       <p v-if="success" class="msg success">{{ success }}</p>
 
       <p class="footer">
-        Уже есть аккаунт?
-        <RouterLink to="/login">Войти</RouterLink>
+        Already have an account?
+        <RouterLink to="/login">Sign in</RouterLink>
       </p>
     </div>
   </section>
@@ -198,3 +221,4 @@ button:disabled {
   }
 }
 </style>
+
