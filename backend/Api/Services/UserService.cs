@@ -1,6 +1,7 @@
 using Api.DTOs;
 using Data;
 using Data.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
@@ -10,11 +11,16 @@ public class UserService : IUserService
 {
     private readonly AppDbContext _db;
     private readonly ILogger<UserService> _logger;
+    private readonly IPasswordHasher<User> _passwordHasher;
 
-    public UserService(AppDbContext db, ILogger<UserService> logger)
+    public UserService(
+        AppDbContext db,
+        ILogger<UserService> logger,
+        IPasswordHasher<User> passwordHasher)
     {
         _db = db;
         _logger = logger;
+        _passwordHasher = passwordHasher;
     }
 
     public async Task<(UserResponse? user, string? error)> CreateAsync(CreateUserRequest request)
@@ -24,6 +30,7 @@ public class UserService : IUserService
             Name = request.Name!.Trim(),
             Email = request.Email!.Trim().ToLowerInvariant()
         };
+        user.PasswordHash = _passwordHasher.HashPassword(user, request.Password!);
 
         _db.Users.Add(user);
 
