@@ -71,8 +71,6 @@ BenchmarkDotNet.Artifacts/
 *.swp
 *.swo
 
-docs/Постановка задач проекта.pdf
 TODO.md
-
 ~
 docs/Постановка задачи.pdf

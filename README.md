@@ -1,89 +1,140 @@
 # IntraLink
 
-> **Project Description**
-> IntraLink is a corporate social network that lets you manage an organization
-> employee directory, create personal pages, department and division pages,
-> project team pages, publish information on those pages, create events
-> (calendar entries), and invite employees to those events.
+**IntraLink** is a corporate social network for managing an organization — employee directory, personal pages, department and project team pages, news feed, and a corporate event calendar.
 
-## Technology Stack
+![.NET](https://img.shields.io/badge/.NET-8-512BD4?logo=dotnet&logoColor=white)
+![Vue.js](https://img.shields.io/badge/Vue.js-3-42b883?logo=vue.js&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?logo=postgresql&logoColor=white)
+![EF Core](https://img.shields.io/badge/EF_Core-8-512BD4?logo=dotnet&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-brightgreen)
 
-* **server**: .NET 8 (ASP.NET Core Web API)
-* **Database**: PostgreSQL
-* **ORM**: Entity Framework Core
-* **client**: Vue.js
+---
+
+## Table of Contents
+
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Database Setup](#database-setup)
+  - [Migrations](#migrations)
+  - [Run the Server](#run-the-server)
+  - [Run the Client](#run-the-client)
+
+---
+
+## Tech Stack
+
+| Layer    | Technology                    |
+|----------|-------------------------------|
+| Backend  | ASP.NET Core Web API (.NET 8) |
+| Frontend | Vue.js 3                      |
+| Database | PostgreSQL                    |
+| ORM      | Entity Framework Core 8       |
+
+---
 
 ## Project Structure
 
-* `server/Api` - Main Web API project.
-* `server/Data` - Class library with the DB context and migrations.
-* `client/intralink-frontend` - Client application.
-* `docs/` - Project documentation and technical specification.
+```
+IntraLink/
+├── server/
+│   ├── Api/            # Controllers, DTOs, validators, entry point
+│   ├── Application/    # Business logic: services, interfaces, use-cases
+│   └── Data/           # DbContext and EF Core migrations
+├── client/
+│   └── intralink-frontend/   # Vue.js 3 SPA
+└── tests/              # Automated tests
+```
 
-## Setup and Run
+---
+
+## Getting Started
 
 ### Prerequisites
 
-1. Install the .NET 8 SDK.
-2. Install PostgreSQL.
-3. Enable access to the `dotnet ef` tool if it is missing:
+- [.NET 8 SDK](https://dotnet.microsoft.com/download)
+- [PostgreSQL](https://www.postgresql.org/download/)
+- [Node.js 20+](https://nodejs.org/) and npm
+
+Install the EF Core CLI tool if not already available:
 
 ```powershell
 dotnet tool install --global dotnet-ef
 ```
 
-### Configure the Database
+---
 
-Do not store passwords in code. Use User Secrets to set the connection string.
+### Database Setup
 
-Open a terminal in `server/Api` and run:
+> [!IMPORTANT]
+> Never store passwords in source code. Use **User Secrets** for local development.
+
+Run the following commands from the `server/Api` directory:
 
 ```powershell
 dotnet user-secrets init
+```
+
+```powershell
 dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Host=localhost;Database=IntraLinkDb;Username=postgres;Password=YOUR_PASSWORD"
 ```
 
-Replace `YOUR_PASSWORD` with your local postgres user password.
+Replace `YOUR_PASSWORD` with your local PostgreSQL user password.
 
-### Work with Migrations
+---
 
-Run migration commands from the project root.
+### Migrations
 
-Create a new migration:
+All migration commands must be run from the **repository root**.
+
+**Create a new migration:**
 
 ```powershell
 dotnet ef migrations add <MigrationName> --project server/Data/Data.csproj --startup-project server/Api/Api.csproj
 ```
 
-Apply migrations to the database:
+**Apply migrations to the database:**
 
 ```powershell
 dotnet ef database update --project server/Data/Data.csproj --startup-project server/Api/Api.csproj
 ```
 
-Roll back to a previous migration:
+**Roll back to a specific migration:**
 
 ```powershell
 dotnet ef database update <PreviousMigrationName> --project server/Data/Data.csproj --startup-project server/Api/Api.csproj
 ```
 
-### Run Server
+---
+
+### Run the Server
 
 ```powershell
 dotnet run --project server/Api/Api.csproj
 ```
 
-Run the API with auto reload:
+With hot reload:
 
 ```powershell
 dotnet watch run --project server/Api/Api.csproj
 ```
 
-The API will be available at `http://localhost:5038/swagger`. The port may differ; check the terminal output.
+> [!NOTE]
+> Swagger UI will be available at `http://localhost:5038/swagger`. The port may vary — check the terminal output.
 
-### Run Client
+---
+
+### Run the Client
 
 ```powershell
 cd client/intralink-frontend
+npm install
 npm run dev
 ```
+
+---
+
+## License
+
+Distributed under the [MIT License](./LICENSE).
