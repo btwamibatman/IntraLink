@@ -1,6 +1,6 @@
-using Api.DTOs;
+using Application.DTOs;
 
-namespace Api.Services;
+namespace Application.Interfaces;
 
 public interface IUserService
 {

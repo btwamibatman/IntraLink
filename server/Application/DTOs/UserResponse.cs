@@ -1,3 +1,5 @@
+namespace Application.DTOs;
+
 public class UserResponse
 {
     public int Id { get; set; }

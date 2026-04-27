@@ -1,11 +1,13 @@
-using Api.DTOs;
+using Application.DTOs;
+using Application.Interfaces;
 using Data;
 using Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Npgsql;
 
-namespace Api.Services;
+namespace Application.Services;
 
 public class UserService : IUserService
 {

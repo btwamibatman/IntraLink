@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using Api.Services;
+using Application.Interfaces;
+using Application.Services;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
