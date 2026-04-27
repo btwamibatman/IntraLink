@@ -8,16 +8,16 @@
 
 ## 🛠 Technology Stack
 
-*   **Backend**: .NET 8 (ASP.NET Core Web API)
+*   **server **: .NET 8 (ASP.NET Core Web API)
 *   **Database**: PostgreSQL
 *   **ORM**: Entity Framework Core
-*   **Frontend**: Vue.js
+*   **client**: Vue.js
 
 ## 📂 Project Structure
 
-*   `backend/Api` — Main Web API project.
-*   `backend/Data` — Class library with the DB context and migrations.
-    'frontend/src' - frontend part of project
+*   `server /Api` — Main Web API project.
+*   `server /Data` — Class library with the DB context and migrations.
+    'client/src' - client part of project
 *   `docs/` — Project documentation and technical specification.
 
 ## 🚀 Setup and Run (Developers)
@@ -33,7 +33,7 @@
 ### 1. Configure the Database
 Do not store passwords in code. Use **User Secrets** to set the connection string.
 
-Open a terminal in `backend/Api` and run:
+Open a terminal in `server /Api` and run:
 ```powershell
 dotnet user-secrets init
 dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Host=localhost;Database=IntraLinkDb;Username=postgres;Password=YOUR_PASSWORD"
@@ -41,14 +41,14 @@ dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Host=localhost;Da
 *(Replace `YOUR_PASSWORD` with your local postgres user password.)*\
 
 ### 2. Create Migrations
-To create the database and tables, run this from the project root(cd backend/Api):
+To create the database and tables, run this from the project root(cd server /Api):
 ```powershell
-dotnet ef database update --project backend/Data/Data.csproj --startup-project backend/Api/Api.csproj
+dotnet ef database update --project server /Data/Data.csproj --startup-project server /Api/Api.csproj
 ```
 
 ### 2.2 Work with Migration
 1. Create new migration
-from folder cd backend/Api:
+from folder cd server /Api:
 dotnet ef migrations add <MigrationName> --project ..\Data --startup-project .
 for example:
 dotnet ef migrations add AddEmailToUser --project ..\Data --startup-project .
@@ -59,16 +59,16 @@ dotnet ef database update --project ..\Data --startup-project .
 3. roll back for previous version of migration
 dotnet ef database update <PreviousMigrationName> --project ..\Data --startup-project .
 
-### 3. Run Backend
+### 3. Run server 
 ```powershell
-dotnet run --project backend/Api/Api.csproj
+dotnet run --project server /Api/Api.csproj
 ```
-## dotnet watch run --project backend/Api/Api.csproj - Run of the API with the AUTORELOAD.
+## dotnet watch run --project server /Api/Api.csproj - Run of the API with the AUTORELOAD.
 
 The API will be available at `http://localhost:5038/swagger` (the port may differ; check the terminal output).
 
-### 3. Run Frontend
-cd "c:\Users\Hamza\OneDrive\Desktop\Notes of Hamza\Programming\Projects\IntraLink\frontend\intralink-frontend"
+### 3. Run client
+cd "c:\Users\Hamza\OneDrive\Desktop\Notes of Hamza\Programming\Projects\IntraLink\client\intralink-client"
 
 npm run dev
 

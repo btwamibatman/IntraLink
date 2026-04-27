@@ -29,7 +29,7 @@ const navIconPath: Record<NavIcon, string> = {
 const friends = [
   { name: 'Emily Carter', role: 'Product Designer', status: 'online', color: '#7b8cff' },
   { name: 'Fiona Park', role: 'Data Analyst', status: 'offline', color: '#4fc3f7' },
-  { name: 'Jennifer Lee', role: 'Frontend Dev', status: 'online', color: '#f6b93b' },
+  { name: 'Jennifer Lee', role: 'client Dev', status: 'online', color: '#f6b93b' },
   { name: 'Anne Rogers', role: 'HR Manager', status: 'away', color: '#ff7a90' },
   { name: 'Andrew Miles', role: 'Project Lead', status: 'online', color: '#5cd18a' },
   { name: 'Sonia Patel', role: 'Marketing', status: 'offline', color: '#7ed6df' },
@@ -79,7 +79,7 @@ const notifications = [
 
 const communities = [
   { name: 'UI/UX Designers', members: '54 new posts' },
-  { name: 'Frontend Developers', members: '18 new posts' },
+  { name: 'client Developers', members: '18 new posts' },
   { name: 'Product Ops', members: '7 new posts' },
 ]
 

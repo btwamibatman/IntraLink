@@ -36,7 +36,7 @@ try
     builder.Services.AddValidatorsFromAssemblyContaining<Program>();
     builder.Services.AddCors(options =>
     {
-        options.AddPolicy("Frontend", policy =>
+        options.AddPolicy("client", policy =>
         {
             policy.WithOrigins(
                     "http://localhost:5173",
@@ -84,7 +84,7 @@ try
         });
     });
 
-    app.UseCors("Frontend");
+    app.UseCors("client");
     app.UseHttpsRedirection();
     app.MapGet("/", () => "Server is running.");
     app.MapControllers();
