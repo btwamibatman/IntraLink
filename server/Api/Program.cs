@@ -90,6 +90,10 @@ try
     app.MapControllers();
     app.Run();
 }
+catch (HostAbortedException)
+{
+    // EF Core tools abort the host after discovering the DbContext at design time.
+}
 catch (Exception ex)
 {
     Log.Fatal(ex, "API host terminated unexpectedly");
