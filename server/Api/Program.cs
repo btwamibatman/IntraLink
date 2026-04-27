@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using Api.Services;
+using Application.Interfaces;
+using Application.Services;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -36,7 +37,7 @@ try
     builder.Services.AddValidatorsFromAssemblyContaining<Program>();
     builder.Services.AddCors(options =>
     {
-        options.AddPolicy("Frontend", policy =>
+        options.AddPolicy("client", policy =>
         {
             policy.WithOrigins(
                     "http://localhost:5173",
@@ -84,11 +85,15 @@ try
         });
     });
 
-    app.UseCors("Frontend");
+    app.UseCors("client");
     app.UseHttpsRedirection();
     app.MapGet("/", () => "Server is running.");
     app.MapControllers();
     app.Run();
+}
+catch (HostAbortedException)
+{
+    // EF Core tools abort the host after discovering the DbContext at design time.
 }
 catch (Exception ex)
 {

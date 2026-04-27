@@ -1,5 +1,6 @@
 using Api.DTOs;
-using Api.Services;
+using Application.Interfaces;
+using Application.Users;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -18,7 +19,12 @@ public class UsersController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Create([FromBody] CreateUserRequest request)
     {
-        var (user, error) = await _userService.CreateAsync(request);
+        var (user, error) = await _userService.CreateAsync(new CreateUserCommand
+        {
+            Name = request.Name!,
+            Email = request.Email!,
+            Password = request.Password!
+        });
 
         if (error is not null)
             return Conflict(new ProblemDetails
@@ -28,13 +34,17 @@ public class UsersController : ControllerBase
                 Status = StatusCodes.Status409Conflict
             });
 
-        return CreatedAtAction(nameof(GetById), new { id = user!.Id }, user);
+        return CreatedAtAction(nameof(GetById), new { id = user!.Id }, MapToResponse(user));
     }
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        var (user, error) = await _userService.AuthenticateAsync(request);
+        var (user, error) = await _userService.AuthenticateAsync(new LoginCommand
+        {
+            Email = request.Email!,
+            Password = request.Password!
+        });
         if (error is not null)
         {
             return Unauthorized(new ProblemDetails
@@ -45,14 +55,14 @@ public class UsersController : ControllerBase
             });
         }
 
-        return Ok(user);
+        return Ok(MapToResponse(user!));
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
     {
         var users = await _userService.GetAllAsync();
-        return Ok(users);
+        return Ok(users.Select(MapToResponse));
     }
 
     [HttpGet("{id:int}")]
@@ -60,13 +70,17 @@ public class UsersController : ControllerBase
     {
         var user = await _userService.GetByIdAsync(id);
 
-        return user is null ? NotFound() : Ok(user);
+        return user is null ? NotFound() : Ok(MapToResponse(user));
     }
 
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] UpdateUserRequest request)
     {
-        var (user, error) = await _userService.UpdateAsync(id, request);
+        var (user, error) = await _userService.UpdateAsync(id, new UpdateUserCommand
+        {
+            Name = request.Name!,
+            Email = request.Email!
+        });
 
         if (error == "not_found") return NotFound();
         if (error is not null)
@@ -77,7 +91,7 @@ public class UsersController : ControllerBase
                 Status = StatusCodes.Status409Conflict
             });
 
-        return Ok(user);
+        return Ok(MapToResponse(user!));
     }
 
     [HttpDelete("{id:int}")]
@@ -86,4 +100,11 @@ public class UsersController : ControllerBase
         var deleted = await _userService.DeleteAsync(id);
         return deleted ? NoContent() : NotFound();
     }
+
+    private static UserResponse MapToResponse(UserResult user) => new()
+    {
+        Id = user.Id,
+        Name = user.Name,
+        Email = user.Email
+    };
 }

@@ -1,11 +1,13 @@
-using Api.DTOs;
+using Application.Interfaces;
+using Application.Users;
 using Data;
 using Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Npgsql;
 
-namespace Api.Services;
+namespace Application.Services;
 
 public class UserService : IUserService
 {
@@ -23,14 +25,14 @@ public class UserService : IUserService
         _passwordHasher = passwordHasher;
     }
 
-    public async Task<(UserResponse? user, string? error)> CreateAsync(CreateUserRequest request)
+    public async Task<(UserResult? user, string? error)> CreateAsync(CreateUserCommand command)
     {
         var user = new User
         {
-            Name = request.Name!.Trim(),
-            Email = request.Email!.Trim().ToLowerInvariant()
+            Name = command.Name.Trim(),
+            Email = command.Email.Trim().ToLowerInvariant()
         };
-        user.PasswordHash = _passwordHasher.HashPassword(user, request.Password!);
+        user.PasswordHash = _passwordHasher.HashPassword(user, command.Password);
 
         _db.Users.Add(user);
 
@@ -47,9 +49,9 @@ public class UserService : IUserService
         }
     }
 
-    public async Task<(UserResponse? user, string? error)> AuthenticateAsync(LoginRequest request)
+    public async Task<(UserResult? user, string? error)> AuthenticateAsync(LoginCommand command)
     {
-        var normalizedEmail = request.Email!.Trim().ToLowerInvariant();
+        var normalizedEmail = command.Email.Trim().ToLowerInvariant();
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == normalizedEmail);
 
         if (user is null)
@@ -58,7 +60,7 @@ public class UserService : IUserService
             return (null, "invalid_credentials");
         }
 
-        var verifyResult = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, request.Password!);
+        var verifyResult = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, command.Password);
         if (verifyResult == PasswordVerificationResult.Failed)
         {
             _logger.LogWarning("Login failed due to wrong password for user {UserId}", user.Id);
@@ -69,7 +71,7 @@ public class UserService : IUserService
         return (MapToResponse(user), null);
     }
 
-    public async Task<List<UserResponse>> GetAllAsync()
+    public async Task<List<UserResult>> GetAllAsync()
     {
         return await _db.Users
             .AsNoTracking()
@@ -77,7 +79,7 @@ public class UserService : IUserService
             .ToListAsync();
     }
 
-    public async Task<UserResponse?> GetByIdAsync(int id)
+    public async Task<UserResult?> GetByIdAsync(int id)
     {
         var user = await _db.Users
             .AsNoTracking()
@@ -86,15 +88,15 @@ public class UserService : IUserService
         return user is null ? null : MapToResponse(user);
     }
 
-    public async Task<(UserResponse? user, string? error)> UpdateAsync(int id, UpdateUserRequest request)
+    public async Task<(UserResult? user, string? error)> UpdateAsync(int id, UpdateUserCommand command)
     {
         var user = await _db.Users.FindAsync(id);
 
         if (user is null)
             return (null, "not_found");
 
-        user.Name = request.Name!.Trim();
-        user.Email = request.Email!.Trim().ToLowerInvariant();
+        user.Name = command.Name.Trim();
+        user.Email = command.Email.Trim().ToLowerInvariant();
 
         try
         {
@@ -122,7 +124,7 @@ public class UserService : IUserService
         return true;
     }
 
-    private static UserResponse MapToResponse(User user) => new()
+    private static UserResult MapToResponse(User user) => new()
     {
         Id = user.Id,
         Name = user.Name,
