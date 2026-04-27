@@ -1,13 +1,13 @@
-using Application.DTOs;
+using Application.Users;
 
 namespace Application.Interfaces;
 
 public interface IUserService
 {
-    Task<(UserResponse? user, string? error)> CreateAsync(CreateUserRequest request);
-    Task<(UserResponse? user, string? error)> AuthenticateAsync(LoginRequest request);
-    Task<List<UserResponse>> GetAllAsync();
-    Task<UserResponse?> GetByIdAsync(int id);
-    Task<(UserResponse? user, string? error)> UpdateAsync(int id, UpdateUserRequest request);
+    Task<(UserResult? user, string? error)> CreateAsync(CreateUserCommand command);
+    Task<(UserResult? user, string? error)> AuthenticateAsync(LoginCommand command);
+    Task<List<UserResult>> GetAllAsync();
+    Task<UserResult?> GetByIdAsync(int id);
+    Task<(UserResult? user, string? error)> UpdateAsync(int id, UpdateUserCommand command);
     Task<bool> DeleteAsync(int id);
 }
