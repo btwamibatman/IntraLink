@@ -1,6 +1,6 @@
 # IntraLink
 
-**IntraLink** is a corporate social network for managing an organization — employee directory, personal pages, department and project team pages, news feed, and a corporate event calendar.
+**IntraLink** is a corporate social network for managing an organization - employee directory, personal pages, department and project team pages, news feed, and a corporate event calendar.
 
 ![.NET](https://img.shields.io/badge/.NET-8-512BD4?logo=dotnet&logoColor=white)
 ![Vue.js](https://img.shields.io/badge/Vue.js-3-42b883?logo=vue.js&logoColor=white)
@@ -13,6 +13,7 @@
 ## Table of Contents
 
 - [Tech Stack](#tech-stack)
+- [Architecture](#architecture)
 - [Project Structure](#project-structure)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
@@ -34,6 +35,14 @@
 
 ---
 
+## Architecture
+
+<p align="center">
+  <img src="./docs/Project_Architecture.png" alt="IntraLink project architecture" width="760">
+</p>
+
+---
+
 ## Project Structure
 
 ```
@@ -44,6 +53,7 @@ IntraLink/
 │   └── Data/           # DbContext and EF Core migrations
 ├── client/
 │   └── intralink-frontend/   # Vue.js 3 SPA
+├── docs/               # Architecture diagrams and project documentation
 └── tests/              # Automated tests
 ```
 
