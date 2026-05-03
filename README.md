@@ -47,14 +47,14 @@
 
 ```
 IntraLink/
-├── server/
-│   ├── Api/            # Controllers, DTOs, validators, entry point
-│   └── Application/    # Business logic: services, interfaces, use-cases
-├── Data/               # DbContext and EF Core migrations
-├── client/
-│   └── intralink-frontend/   # Vue.js 3 SPA
-├── docs/               # Architecture diagrams and project documentation
-└── tests/              # Automated tests
+|-- src/
+|   |-- Intralink.Api/          # Controllers, DTOs, validators, entry point
+|   |-- Intralink.Application/  # Business logic: services, interfaces, use-cases
+|   `-- Intralink.Data/         # DbContext and EF Core migrations
+|-- client/
+|   `-- intralink-frontend/     # Vue.js 3 SPA
+|-- docs/                       # Architecture diagrams and project documentation
+`-- tests/                      # Automated tests
 ```
 
 ---
@@ -80,7 +80,7 @@ dotnet tool install --global dotnet-ef
 > [!IMPORTANT]
 > Never store passwords in source code. Use **User Secrets** for local development.
 
-Run the following commands from the `server/Api` directory:
+Run the following commands from the `src/Intralink.Api` directory:
 
 ```powershell
 dotnet user-secrets init
@@ -101,19 +101,19 @@ All migration commands must be run from the **repository root**.
 **Create a new migration:**
 
 ```powershell
-dotnet ef migrations add <MigrationName> --project Data/Data.csproj --startup-project server/Api/Api.csproj
+dotnet ef migrations add <MigrationName> --project src/Intralink.Data/Data.csproj --startup-project src/Intralink.Api/Api.csproj
 ```
 
 **Apply migrations to the database:**
 
 ```powershell
-dotnet ef database update --project Data/Data.csproj --startup-project server/Api/Api.csproj
+dotnet ef database update --project src/Intralink.Data/Data.csproj --startup-project src/Intralink.Api/Api.csproj
 ```
 
 **Roll back to a specific migration:**
 
 ```powershell
-dotnet ef database update <PreviousMigrationName> --project Data/Data.csproj --startup-project server/Api/Api.csproj
+dotnet ef database update <PreviousMigrationName> --project src/Intralink.Data/Data.csproj --startup-project src/Intralink.Api/Api.csproj
 ```
 
 ---
@@ -121,13 +121,13 @@ dotnet ef database update <PreviousMigrationName> --project Data/Data.csproj --s
 ### Run the Server
 
 ```powershell
-dotnet run --project server/Api/Api.csproj
+dotnet run --project src/Intralink.Api/Api.csproj
 ```
 
 With hot reload:
 
 ```powershell
-dotnet watch run --project server/Api/Api.csproj
+dotnet watch run --project src/Intralink.Api/Api.csproj
 ```
 
 > [!NOTE]

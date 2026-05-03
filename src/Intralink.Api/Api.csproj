@@ -23,8 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Data\Data.csproj" />
-    <ProjectReference Include="..\Application\Application.csproj" />
+    <ProjectReference Include="..\Intralink.Data\Data.csproj" />
+    <ProjectReference Include="..\Intralink.Application\Application.csproj" />
   </ItemGroup>
 
 </Project>
