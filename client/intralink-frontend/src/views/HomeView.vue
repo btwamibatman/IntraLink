@@ -193,7 +193,7 @@ const initials = (name: string) =>
                 <span class="avatar avatar--sm">{{ initials(post.author) }}</span>
                 <div>
                   <div class="post-name">{{ post.author }}</div>
-                  <div class="post-role">{{ post.role }} пїЅ {{ post.time }}</div>
+                  <div class="post-role">{{ post.role }} - {{ post.time }}</div>
                 </div>
               </div>
               <button class="ghost-button">More</button>
@@ -773,4 +773,3 @@ const initials = (name: string) =>
   }
 }
 </style>
-
