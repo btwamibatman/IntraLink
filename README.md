@@ -49,8 +49,8 @@
 IntraLink/
 ├── server/
 │   ├── Api/            # Controllers, DTOs, validators, entry point
-│   ├── Application/    # Business logic: services, interfaces, use-cases
-│   └── Data/           # DbContext and EF Core migrations
+│   └── Application/    # Business logic: services, interfaces, use-cases
+├── Data/               # DbContext and EF Core migrations
 ├── client/
 │   └── intralink-frontend/   # Vue.js 3 SPA
 ├── docs/               # Architecture diagrams and project documentation
@@ -101,19 +101,19 @@ All migration commands must be run from the **repository root**.
 **Create a new migration:**
 
 ```powershell
-dotnet ef migrations add <MigrationName> --project server/Data/Data.csproj --startup-project server/Api/Api.csproj
+dotnet ef migrations add <MigrationName> --project Data/Data.csproj --startup-project server/Api/Api.csproj
 ```
 
 **Apply migrations to the database:**
 
 ```powershell
-dotnet ef database update --project server/Data/Data.csproj --startup-project server/Api/Api.csproj
+dotnet ef database update --project Data/Data.csproj --startup-project server/Api/Api.csproj
 ```
 
 **Roll back to a specific migration:**
 
 ```powershell
-dotnet ef database update <PreviousMigrationName> --project server/Data/Data.csproj --startup-project server/Api/Api.csproj
+dotnet ef database update <PreviousMigrationName> --project Data/Data.csproj --startup-project server/Api/Api.csproj
 ```
 
 ---
