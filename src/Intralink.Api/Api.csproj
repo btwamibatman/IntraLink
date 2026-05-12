@@ -25,6 +25,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Intralink.Data\Data.csproj" />
     <ProjectReference Include="..\Intralink.Application\Application.csproj" />
+    <ProjectReference Include="..\IntraLink.Domain\Domain.csproj" />
   </ItemGroup>
 
 </Project>

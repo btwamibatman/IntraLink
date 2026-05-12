@@ -1,6 +1,6 @@
 using Application.Interfaces;
-using Application.Users;
-using Data.Entities;
+using Domain.Entities;
+using Domain.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
@@ -15,15 +15,13 @@ public class UserRepository : IUserRepository
         _db = db;
     }
 
-    public async Task AddAsync(UserAccount user)
+    public async Task AddAsync(User user)
     {
-        var entity = MapToEntity(user);
-        _db.Users.Add(entity);
+        _db.Users.Add(user);
 
         try
         {
             await _db.SaveChangesAsync();
-            user.Id = entity.Id;
         }
         catch (DbUpdateException ex) when (IsUniqueEmailViolation(ex))
         {
@@ -31,39 +29,28 @@ public class UserRepository : IUserRepository
         }
     }
 
-    public async Task<UserAccount?> GetByEmailAsync(string email)
-    {
-        var user = await _db.Users
-            .AsNoTracking()
-            .FirstOrDefaultAsync(u => u.Email == email);
-
-        return user is null ? null : MapToAccount(user);
-    }
-
-    public async Task<List<UserAccount>> GetAllAsync()
+    public async Task<User?> GetByEmailAsync(string email)
     {
         return await _db.Users
             .AsNoTracking()
-            .Select(u => new UserAccount
-            {
-                Id = u.Id,
-                Name = u.Name,
-                Email = u.Email,
-                PasswordHash = u.PasswordHash
-            })
+            .FirstOrDefaultAsync(u => u.Email == email);
+    }
+
+    public async Task<List<User>> GetAllAsync()
+    {
+        return await _db.Users
+            .AsNoTracking()
             .ToListAsync();
     }
 
-    public async Task<UserAccount?> GetByIdAsync(int id)
+    public async Task<User?> GetByIdAsync(int id)
     {
-        var user = await _db.Users
+        return await _db.Users
             .AsNoTracking()
             .FirstOrDefaultAsync(u => u.Id == id);
-
-        return user is null ? null : MapToAccount(user);
     }
 
-    public async Task<bool> UpdateAsync(UserAccount user)
+    public async Task<bool> UpdateAsync(User user)
     {
         var entity = await _db.Users.FindAsync(user.Id);
 
@@ -96,22 +83,6 @@ public class UserRepository : IUserRepository
         await _db.SaveChangesAsync();
         return true;
     }
-
-    private static UserAccount MapToAccount(User user) => new()
-    {
-        Id = user.Id,
-        Name = user.Name,
-        Email = user.Email,
-        PasswordHash = user.PasswordHash
-    };
-
-    private static User MapToEntity(UserAccount user) => new()
-    {
-        Id = user.Id,
-        Name = user.Name,
-        Email = user.Email,
-        PasswordHash = user.PasswordHash
-    };
 
     private static bool IsUniqueEmailViolation(DbUpdateException ex)
     {
