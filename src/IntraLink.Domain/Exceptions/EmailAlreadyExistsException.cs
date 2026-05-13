@@ -1,4 +1,4 @@
-namespace Application.Users;
+namespace Domain.Exceptions;
 
 public class EmailAlreadyExistsException : Exception
 {

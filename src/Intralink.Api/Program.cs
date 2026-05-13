@@ -9,6 +9,7 @@ using FluentValidation.AspNetCore;
 using Application.Interfaces;
 using Application.Services;
 using Application.Users;
+using Domain.Entities;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -34,7 +35,7 @@ try
     builder.Services.AddControllers();
     builder.Services.AddScoped<IUserService, UserService>();
     builder.Services.AddScoped<IUserRepository, UserRepository>();
-    builder.Services.AddScoped<IPasswordHasher<UserAccount>, PasswordHasher<UserAccount>>();
+    builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
     builder.Services.AddProblemDetails();
     builder.Services.AddValidatorsFromAssemblyContaining<Program>();
     builder.Services.AddCors(options =>

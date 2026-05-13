@@ -1,5 +1,7 @@
 using Application.Interfaces;
 using Application.Users;
+using Domain.Entities;
+using Domain.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
@@ -9,12 +11,12 @@ public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
     private readonly ILogger<UserService> _logger;
-    private readonly IPasswordHasher<UserAccount> _passwordHasher;
+    private readonly IPasswordHasher<User> _passwordHasher;
 
     public UserService(
         IUserRepository userRepository,
         ILogger<UserService> logger,
-        IPasswordHasher<UserAccount> passwordHasher)
+        IPasswordHasher<User> passwordHasher)
     {
         _userRepository = userRepository;
         _logger = logger;
@@ -23,7 +25,7 @@ public class UserService : IUserService
 
     public async Task<(UserResult? user, string? error)> CreateAsync(CreateUserCommand command)
     {
-        var user = new UserAccount
+        var user = new User
         {
             Name = command.Name.Trim(),
             Email = command.Email.Trim().ToLowerInvariant()
@@ -116,7 +118,7 @@ public class UserService : IUserService
         return true;
     }
 
-    private static UserResult MapToResponse(UserAccount user) => new()
+    private static UserResult MapToResponse(User user) => new()
     {
         Id = user.Id,
         Name = user.Name,

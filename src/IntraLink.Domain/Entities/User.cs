@@ -1,6 +1,6 @@
-namespace Application.Users;
+namespace Domain.Entities;
 
-public class UserAccount
+public class User
 {
     public int Id { get; set; }
     public string Name { get; set; } = "";

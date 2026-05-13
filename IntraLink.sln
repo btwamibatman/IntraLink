@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "src\Intralink.Data\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "src\Intralink.Application\Application.csproj", "{90390CA9-9179-4424-A32F-5E5FD1D0C106}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "src\IntraLink.Domain\Domain.csproj", "{980B5DD9-20C2-4B59-BBE4-37B0870690D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,6 +30,10 @@ Global
 		{90390CA9-9179-4424-A32F-5E5FD1D0C106}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90390CA9-9179-4424-A32F-5E5FD1D0C106}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90390CA9-9179-4424-A32F-5E5FD1D0C106}.Release|Any CPU.Build.0 = Release|Any CPU
+		{980B5DD9-20C2-4B59-BBE4-37B0870690D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{980B5DD9-20C2-4B59-BBE4-37B0870690D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{980B5DD9-20C2-4B59-BBE4-37B0870690D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{980B5DD9-20C2-4B59-BBE4-37B0870690D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -35,6 +41,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{A28F0853-CD93-D005-10F9-5F5C999F3E51} = {1AE8ACA6-933B-BF2A-3671-3E2EAC007D16}
 		{90390CA9-9179-4424-A32F-5E5FD1D0C106} = {1AE8ACA6-933B-BF2A-3671-3E2EAC007D16}
+		{980B5DD9-20C2-4B59-BBE4-37B0870690D3} = {1AE8ACA6-933B-BF2A-3671-3E2EAC007D16}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D73B1923-F95A-41E9-9130-751EDE16E83D}

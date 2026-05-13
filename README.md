@@ -50,6 +50,7 @@ IntraLink/
 |-- src/
 |   |-- Intralink.Api/          # Controllers, DTOs, validators, entry point
 |   |-- Intralink.Application/  # Business logic: services, interfaces, use-cases
+|   |-- Intralink.Domain/       # Domain entities, value objects, domain exceptions
 |   `-- Intralink.Data/         # DbContext and EF Core migrations
 |-- client/
 |   `-- intralink-frontend/     # Vue.js 3 SPA
