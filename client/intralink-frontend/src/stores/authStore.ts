@@ -8,6 +8,18 @@ interface User {
   role: string
 }
 
+function isStoredUser(value: unknown): value is User {
+  if (typeof value !== 'object' || value === null) return false
+
+  const user = value as Record<string, unknown>
+  return (
+    (typeof user.id === 'number' || user.id === null) &&
+    typeof user.name === 'string' &&
+    typeof user.email === 'string' &&
+    typeof user.role === 'string'
+  )
+}
+
 export const useAuthStore = defineStore('auth', () => {
   // Состояние
   const currentUser = ref<User | null>(null)
@@ -53,12 +65,25 @@ export const useAuthStore = defineStore('auth', () => {
     const savedUser = localStorage.getItem('user')
     const savedToken = localStorage.getItem('token')
 
-    if (savedUser) {
-      currentUser.value = JSON.parse(savedUser)
+    currentUser.value = null
+    token.value = null
+
+    if (!savedUser) {
+      localStorage.removeItem('token')
+      return
     }
 
-    if (savedToken) {
+    try {
+      const parsedUser: unknown = JSON.parse(savedUser)
+      if (!isStoredUser(parsedUser)) {
+        throw new TypeError('Stored user has an invalid shape')
+      }
+
+      currentUser.value = parsedUser
       token.value = savedToken
+    } catch {
+      localStorage.removeItem('user')
+      localStorage.removeItem('token')
     }
   }
 
