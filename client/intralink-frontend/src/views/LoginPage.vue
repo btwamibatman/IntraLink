@@ -1,7 +1,8 @@
 ﻿<script setup lang="ts">
 import { computed, reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
+import { getPostLoginRedirect } from '@/router/authGuard'
 
 type LoginPayload = {
   email: string
@@ -9,6 +10,7 @@ type LoginPayload = {
 }
 
 const router = useRouter()
+const route = useRoute()
 const authStore = useAuthStore()
 
 const form = reactive<LoginPayload>({
@@ -54,7 +56,7 @@ const login = async () => {
       role: apiUser?.role ?? 'User',
     })
 
-    await router.push('/')
+    await router.push(getPostLoginRedirect(route.query.redirect))
   } catch (e) {
     error.value = e instanceof Error ? e.message : 'Request failed.'
   } finally {
