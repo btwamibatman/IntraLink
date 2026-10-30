@@ -2,6 +2,7 @@
 import { computed, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
+import { parseAuthResponse } from '@/api/authResponse'
 
 type RegisterPayload = {
   name: string
@@ -50,28 +51,13 @@ const register = async () => {
       throw new Error(data?.detail || data?.message || 'Registration failed.')
     }
 
-    const data = await response.json().catch(() => null)
-    const apiUser = data?.user ?? data
-    const token = data?.token as string | undefined
-
-    if (apiUser?.name && apiUser?.email) {
-      authStore.setUser(
-        {
-          id: apiUser.id ?? null,
-          name: apiUser.name,
-          email: apiUser.email,
-          role: apiUser.role ?? 'User',
-        },
-        token,
-      )
-    } else {
-      authStore.setUser({
-        id: null,
-        name: form.name,
-        email: form.email,
-        role: 'User',
-      })
+    const data: unknown = await response.json().catch(() => null)
+    const authResponse = parseAuthResponse(data)
+    if (!authResponse) {
+      throw new Error('Server returned invalid user data.')
     }
+
+    authStore.setUser(authResponse.user, authResponse.token)
 
     success.value = 'Registration successful. Redirecting...'
     await router.push('/')

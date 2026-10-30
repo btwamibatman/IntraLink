@@ -3,6 +3,7 @@ import { computed, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 import { getPostLoginRedirect } from '@/router/authGuard'
+import { parseAuthResponse } from '@/api/authResponse'
 
 type LoginPayload = {
   email: string
@@ -46,15 +47,13 @@ const login = async () => {
       throw new Error(data?.detail || data?.message || 'Login failed.')
     }
 
-    const data = await response.json().catch(() => null)
-    const apiUser = data?.user ?? data
+    const data: unknown = await response.json().catch(() => null)
+    const authResponse = parseAuthResponse(data)
+    if (!authResponse) {
+      throw new Error('Server returned invalid user data.')
+    }
 
-    authStore.setUser({
-      id: apiUser?.id ?? null,
-      name: apiUser?.name ?? form.email,
-      email: apiUser?.email ?? form.email,
-      role: apiUser?.role ?? 'User',
-    })
+    authStore.setUser(authResponse.user, authResponse.token)
 
     await router.push(getPostLoginRedirect(route.query.redirect))
   } catch (e) {
