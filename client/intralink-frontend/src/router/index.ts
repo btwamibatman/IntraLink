@@ -4,7 +4,7 @@ import LoginPage from '../views/LoginPage.vue'
 import RegisterPage from '../views/RegisterPage.vue'
 import ProfileView from '../views/ProfileView.vue'
 import { useAuthStore } from '../stores/authStore'
-import { getAuthRedirect } from './authGuard'
+import { getAuthRedirect, getGuestOnlyRedirect } from './authGuard'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,11 +26,13 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: LoginPage,
+      meta: { guestOnly: true },
     },
     {
       path: '/register',
       name: 'register',
       component: RegisterPage,
+      meta: { guestOnly: true },
     },
     {
       path: '/profile',
@@ -43,7 +45,15 @@ const router = createRouter({
 
 router.beforeEach((to) => {
   const authStore = useAuthStore()
-  return getAuthRedirect(Boolean(to.meta.requiresAuth), authStore.isAuthenticated, to.fullPath)
+  const authRedirect = getAuthRedirect(
+    Boolean(to.meta.requiresAuth),
+    authStore.isAuthenticated,
+    to.fullPath,
+  )
+
+  if (authRedirect !== true) return authRedirect
+
+  return getGuestOnlyRedirect(Boolean(to.meta.guestOnly), authStore.isAuthenticated)
 })
 
 export default router

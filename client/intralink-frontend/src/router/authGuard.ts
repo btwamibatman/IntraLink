@@ -3,6 +3,10 @@ type LoginRedirect = {
   query: { redirect: string }
 }
 
+type HomeRedirect = {
+  name: 'home'
+}
+
 export function getAuthRedirect(
   requiresAuth: boolean,
   isAuthenticated: boolean,
@@ -14,6 +18,15 @@ export function getAuthRedirect(
     name: 'login',
     query: { redirect: fullPath },
   }
+}
+
+export function getGuestOnlyRedirect(
+  guestOnly: boolean,
+  isAuthenticated: boolean,
+): HomeRedirect | true {
+  if (!guestOnly || !isAuthenticated) return true
+
+  return { name: 'home' }
 }
 
 export function getPostLoginRedirect(value: unknown): string {
