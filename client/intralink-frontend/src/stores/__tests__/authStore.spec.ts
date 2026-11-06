@@ -72,4 +72,46 @@ describe('auth session restoration', () => {
     assert.equal(store.token, null)
     assert.equal(localStorage.getItem('token'), null)
   })
+
+  it('clears the previous token when a new user signs in without one', () => {
+    const store = useAuthStore()
+    store.setUser({ id: 1, name: 'Old User', email: 'old@example.com', role: 'User' }, 'old-token')
+    const nextUser = { id: 2, name: 'New User', email: 'new@example.com', role: 'User' }
+
+    store.setUser(nextUser)
+
+    assert.deepEqual(store.currentUser, nextUser)
+    assert.equal(store.isAuthenticated, true)
+    assert.equal(store.token, null)
+    assert.equal(localStorage.getItem('token'), null)
+    assert.deepEqual(JSON.parse(localStorage.getItem('user')!), nextUser)
+
+    setActivePinia(createPinia())
+    const restored = useAuthStore()
+    restored.restoreSession()
+    assert.deepEqual(restored.currentUser, nextUser)
+    assert.equal(restored.token, null)
+  })
+
+  it('replaces the previous token when a new token is supplied', () => {
+    const store = useAuthStore()
+    const user = { id: 1, name: 'Ada', email: 'ada@example.com', role: 'User' }
+    store.setUser(user, 'old-token')
+
+    store.setUser(user, 'new-token')
+
+    assert.equal(store.token, 'new-token')
+    assert.equal(localStorage.getItem('token'), 'new-token')
+  })
+
+  it('clears an old token when an empty token is supplied', () => {
+    const store = useAuthStore()
+    const user = { id: 1, name: 'Ada', email: 'ada@example.com', role: 'User' }
+    store.setUser(user, 'old-token')
+
+    store.setUser(user, '')
+
+    assert.equal(store.token, null)
+    assert.equal(localStorage.getItem('token'), null)
+  })
 })

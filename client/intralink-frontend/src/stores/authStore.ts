@@ -50,6 +50,9 @@ export const useAuthStore = defineStore('auth', () => {
     if (userToken) {
       token.value = userToken
       localStorage.setItem('token', userToken)
+    } else {
+      token.value = null
+      localStorage.removeItem('token')
     }
   }
 
